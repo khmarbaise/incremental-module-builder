@@ -38,12 +38,18 @@ class IncrementalBuilderImpl
     // private final LifecycleModuleBuilder lifecycleModuleBuilder;
 
     IncrementalBuilderImpl( LifecycleModuleBuilder lifecycleModuleBuilder, MavenSession session,
-                      ReactorContext reactorContext, List<TaskSegment> taskSegments )
+                            ReactorContext reactorContext, List<TaskSegment> taskSegments )
     {
         ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
-        for ( MavenProject mavenProject : projectDependencyGraph.getSortedProjects() )
+
+        for ( TaskSegment taskSegment : taskSegments )
         {
-            logger.info( "Project: {}", mavenProject.getId() );
+            logger.info( " TaskSegment: {}", taskSegment.getTasks() );
+            for ( MavenProject mavenProject : projectDependencyGraph.getSortedProjects() )
+            {
+                logger.info( "Project: {}", mavenProject.getId() );
+                lifecycleModuleBuilder.buildProject( session, reactorContext, mavenProject, taskSegment );
+            }
         }
     }
 
