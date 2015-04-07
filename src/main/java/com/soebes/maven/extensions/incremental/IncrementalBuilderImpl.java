@@ -40,12 +40,28 @@ class IncrementalBuilderImpl
     IncrementalBuilderImpl( LifecycleModuleBuilder lifecycleModuleBuilder, MavenSession session,
                             ReactorContext reactorContext, List<TaskSegment> taskSegments )
     {
+
         ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
+
+        MavenProject p = new MavenProject();
+        p.setGroupId( "com.soebes.examples.j2ee" );
+        p.setArtifactId( "webgui" );
+        p.setVersion( "1.0.8-SNAPSHOT" );
+
+        List<MavenProject> downstreamProjects = projectDependencyGraph.getDownstreamProjects( p, true );
+
+        session.setProjects( downstreamProjects );
+
+        logger.info( " New reactor content:" );
+        for ( MavenProject mavenProject : session.getProjects() )
+        {
+            logger.info( " building: {} {}", mavenProject.getId(), mavenProject.getBasedir() );
+        }
 
         for ( TaskSegment taskSegment : taskSegments )
         {
             logger.info( " TaskSegment: {}", taskSegment.getTasks() );
-            for ( MavenProject mavenProject : projectDependencyGraph.getSortedProjects() )
+            for ( MavenProject mavenProject : session.getProjects() )
             {
                 logger.info( "Project: {}", mavenProject.getId() );
                 lifecycleModuleBuilder.buildProject( session, reactorContext, mavenProject, taskSegment );
