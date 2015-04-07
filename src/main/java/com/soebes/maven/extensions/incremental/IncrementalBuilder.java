@@ -41,7 +41,7 @@ public class IncrementalBuilder
                        final List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus )
         throws ExecutionException, InterruptedException
     {
-        // reactorBuildStatus.blackList( project );
+//        reactorBuildStatus.blackList( project );
 
         for ( TaskSegment taskSegment : taskSegments )
         {
