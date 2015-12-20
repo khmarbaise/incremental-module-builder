@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.soebes.smpp</groupId>
     <artifactId>smpp</artifactId>
-    <version>0.8.0</version>
+    <version>1.2.0</version>
   </parent>
 
   <groupId>com.soebes.examples.j2ee</groupId>
