@@ -114,9 +114,10 @@ public class ModuleCalculatorTest {
 	// should be returned for the root module ?
 	// If i call mvn -pl root ... it will not work?
 	Path root = baseDir.toPath();
-	List<ScmFile> changeList = Arrays.asList(new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
-		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED), new ScmFile("pom.xml", ScmFileStatus.MODIFIED));
-	System.out.println("shouldResultInThreeModules");
+	List<ScmFile> changeList = Arrays.asList(
+		new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
+		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED), 
+		new ScmFile("pom.xml", ScmFileStatus.MODIFIED));
 	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
 
 	assertThat(changedModules).hasSize(3).containsOnly(domain, subdomain, parent);
