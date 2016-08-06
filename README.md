@@ -1,25 +1,28 @@
 # Maven Incremental Module Builder
 
 If you are working with larger builds sometimes it is worth to think
-about to build only parts of the whole reactor which have been changed
-which you can control by using the `--projects` option on command line.
+to build only parts of the whole reactor. So it would be nice
+to only build those modules which have been changed. This
+can be controled by using the `--projects` option on command line.
 
 The problem here is that you need to identify those modules which
 have been changed manually which can become cumbersome.
 
-This extension will handle that automatically.
+This extension will handle this automatically.
 
 Status
 ------
 
  * Currently in PoC state.
+ * Code needs improvments.
+ * Need to write more tests / integration tests.
 
 
 Prerequisites
 -------------
 
-Using Maven 3.3.1+
-Java 7 (as Maven 3.3.1).
+ * Using Maven 3.3.1+
+ * Java 7 (as Maven 3.3.1+).
 
 How to Configure?
 -----------------
