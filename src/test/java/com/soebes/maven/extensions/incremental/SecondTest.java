@@ -76,19 +76,7 @@ public class SecondTest extends PlexusTestCase {
 
     }
 
-    public void testRelativze() {
-	File s1 = new File("domain/pom.xml");
-	File base = new File("domain");
-	LOGGER.info("1)startsWith:" + s1.toPath().startsWith(base.toPath()));
-    }
-
-    public void testRelativze2() {
-	File s1 = new File("domain/src/main/java/com/Test.java");
-	File base = new File("domain");
-	LOGGER.info("2)startsWith:" + s1.toPath().startsWith(base.toPath()));
-    }
-    
-    public void testXX() throws Exception {
+    public void testShouldGetChangesFiles() throws Exception {
 	getChangedFiles();
     }
 

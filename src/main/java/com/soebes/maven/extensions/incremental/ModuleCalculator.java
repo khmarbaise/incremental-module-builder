@@ -23,6 +23,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.ScmFile;
@@ -34,23 +35,32 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ModuleCalculator {
-    private static final Logger logger = LoggerFactory.getLogger(ModuleCalculator.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-    //TODO: Don't use a static method? We can use a usual class? 
+    private List<MavenProject> projectList;
+
+    private List<ScmFile> changeList;
+
+    /**
+     * @param projectList
+     *            The list of Maven Projects which are in the reactor.
+     * @param changeList
+     *            The list of changes within this structure.
+     */
+    public ModuleCalculator(List<MavenProject> projectList, List<ScmFile> changeList) {
+	this.projectList = Objects.requireNonNull(projectList, "projectList is not allowed to be null.");
+	this.changeList = Objects.requireNonNull(changeList, "changeList is not allowed to be null.");
+    }
+
     /**
      * Calculate the modules which needed to be rebuilt based on the list of
      * changes from SCM.
      * 
      * @param projectRootpath
      *            Root path of the project.
-     * @param projectList
-     *            The list of Maven Projects which are in the reactor.
-     * @param changeList
-     *            The list of changes within this structure.
      * @return The list of modules which needed to be rebuilt.
      */
-    public static List<MavenProject> calculateChangedModules(Path projectRootpath, List<MavenProject> projectList,
-	    List<ScmFile> changeList) {
+    public List<MavenProject> calculateChangedModules(Path projectRootpath) {
 	List<MavenProject> result = new ArrayList<>();
 	for (MavenProject project : projectList) {
 	    Path relativize = projectRootpath.relativize(project.getBasedir().toPath());

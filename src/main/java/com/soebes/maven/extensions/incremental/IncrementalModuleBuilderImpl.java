@@ -52,9 +52,9 @@ class IncrementalModuleBuilderImpl {
 
 	for (MavenProject selectedProject : selectedProjects) {
 	    intermediateResult.add(selectedProject);
-	    // Up or downstream ?
+	    // Up or downstream ? (-amd)
 	    intermediateResult.addAll(projectDependencyGraph.getDownstreamProjects(selectedProject, true));
-	    // TODO: Need to think about this?
+	    // TODO: Need to think about this? -am ?
 	    // intermediateResult.addAll(projectDependencyGraph.getUpstreamProjects(selectedProject,
 	    // true));
 	}

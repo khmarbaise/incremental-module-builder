@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Named("incremental")
 public class IncrementalModuleBuilder implements Builder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IncrementalModuleBuilder.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private final LifecycleModuleBuilder lifecycleModuleBuilder;
 
@@ -81,7 +81,8 @@ public class IncrementalModuleBuilder implements Builder {
 
 	Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
 
-	//TODO: Make more separation of concerns..(Extract the SCM Code from here? 
+	// TODO: Make more separation of concerns..(Extract the SCM Code from
+	// here?
 	ScmRepository repository = null;
 	try {
 	    // Assumption: top level project contains the SCM entry.
@@ -111,11 +112,12 @@ public class IncrementalModuleBuilder implements Builder {
 		LOGGER.info(" scmFile: " + scmFile.getPath() + " " + scmFile.getStatus());
 	    }
 
-	    List<MavenProject> sortedProjects = session.getProjectDependencyGraph().getSortedProjects();
-	    List<MavenProject> calculateChangedModules = ModuleCalculator.calculateChangedModules(projectRootpath,
-		    sortedProjects, changedFiles);
-	    
-	    //TODO: Think about if we got only pom packaging modules? Do we need to do something special there?
+	    ModuleCalculator mc = new ModuleCalculator(session.getProjectDependencyGraph().getSortedProjects(),
+		    changedFiles);
+	    List<MavenProject> calculateChangedModules = mc.calculateChangedModules(projectRootpath);
+
+	    // TODO: Think about if we got only pom packaging modules? Do we
+	    // need to do something special there?
 	    for (MavenProject mavenProject : calculateChangedModules) {
 		LOGGER.info("Changed Project: " + mavenProject.getId());
 	    }

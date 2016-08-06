@@ -45,6 +45,9 @@ public class ModuleCalculatorTest {
     private MavenProject assembly = createProject("assembly", new File(baseDir, "assembly"));
     private MavenProject domain = createProject("domain", new File(baseDir, "domain"));
     private MavenProject subdomain = createProject("subdomain", new File(baseDir, "domain/subdomain"));
+    
+    private ModuleCalculator moduleCalculator;
+    
 
     @Before
     public void before() {
@@ -69,7 +72,8 @@ public class ModuleCalculatorTest {
 	Path root = baseDir.toPath();
 	List<ScmFile> changeList = Arrays
 		.asList(new ScmFile("domain/src/main/java/com/test.java", ScmFileStatus.MODIFIED));
-	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
+	moduleCalculator = new ModuleCalculator(projectList, changeList);
+	List<MavenProject> changedModules = moduleCalculator.calculateChangedModules(root);
 
 	assertThat(changedModules).hasSize(1).containsExactly(domain);
     }
@@ -80,7 +84,8 @@ public class ModuleCalculatorTest {
 	List<ScmFile> changeList = Arrays.asList(
 		new ScmFile("domain/src/main/java/com/test.java", ScmFileStatus.MODIFIED),
 		new ScmFile("assembly/pom.xml", ScmFileStatus.MODIFIED));
-	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
+	moduleCalculator = new ModuleCalculator(projectList, changeList);
+	List<MavenProject> changedModules = moduleCalculator.calculateChangedModules(root);
 
 	assertThat(changedModules).hasSize(2).containsOnly(domain, assembly);
     }
@@ -93,7 +98,8 @@ public class ModuleCalculatorTest {
 		new ScmFile("domain/src/main/java/Anton.java", ScmFileStatus.MODIFIED),
 		new ScmFile("assembly/pom.xml", ScmFileStatus.MODIFIED));
 
-	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
+	moduleCalculator = new ModuleCalculator(projectList, changeList);
+	List<MavenProject> changedModules = moduleCalculator.calculateChangedModules(root);
 
 	assertThat(changedModules).hasSize(2).containsOnly(domain, assembly);
     }
@@ -103,7 +109,8 @@ public class ModuleCalculatorTest {
 	Path root = baseDir.toPath();
 	List<ScmFile> changeList = Arrays.asList(new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
 		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED));
-	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
+	moduleCalculator = new ModuleCalculator(projectList, changeList);
+	List<MavenProject> changedModules = moduleCalculator.calculateChangedModules(root);
 
 	assertThat(changedModules).hasSize(2).containsOnly(domain, subdomain);
     }
@@ -118,7 +125,8 @@ public class ModuleCalculatorTest {
 		new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
 		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED), 
 		new ScmFile("pom.xml", ScmFileStatus.MODIFIED));
-	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
+	moduleCalculator = new ModuleCalculator(projectList, changeList);
+	List<MavenProject> changedModules = moduleCalculator.calculateChangedModules(root);
 
 	assertThat(changedModules).hasSize(3).containsOnly(domain, subdomain, parent);
     }
