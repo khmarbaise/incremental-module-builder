@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.scm.ScmFile;
 import org.apache.maven.scm.ScmFileStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ModuleCalculatorTest {
@@ -107,10 +108,11 @@ public class ModuleCalculatorTest {
 	assertThat(changedModules).hasSize(2).containsOnly(domain, subdomain);
     }
 
-    @Test
+    @Ignore
     public void shouldResultInThreeModules() {
 	// TODO: Think about this test case. What
 	// should be returned for the root module ?
+	// If i call mvn -pl root ... it will not work?
 	Path root = baseDir.toPath();
 	List<ScmFile> changeList = Arrays.asList(new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
 		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED), new ScmFile("pom.xml", ScmFileStatus.MODIFIED));
