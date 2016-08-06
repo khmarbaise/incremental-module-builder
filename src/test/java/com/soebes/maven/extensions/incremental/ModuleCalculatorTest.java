@@ -1,5 +1,24 @@
 package com.soebes.maven.extensions.incremental;
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,9 +37,9 @@ import org.junit.Test;
 
 public class ModuleCalculatorTest {
 
-    private File baseDir = new File ("/usr/local/project/");
+    private File baseDir = new File("/usr/local/project/");
     private List<MavenProject> projectList;
-    
+
     private MavenProject parent = createProject("parent", new File(baseDir, "."));
     private MavenProject assembly = createProject("assembly", new File(baseDir, "assembly"));
     private MavenProject domain = createProject("domain", new File(baseDir, "domain"));
@@ -47,9 +66,8 @@ public class ModuleCalculatorTest {
     @Test
     public void shouldResultInASingleModule() {
 	Path root = baseDir.toPath();
-	List<ScmFile> changeList = Arrays.asList(
-		new ScmFile("domain/src/main/java/com/test.java", ScmFileStatus.MODIFIED)
-	);
+	List<ScmFile> changeList = Arrays
+		.asList(new ScmFile("domain/src/main/java/com/test.java", ScmFileStatus.MODIFIED));
 	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
 
 	assertThat(changedModules).hasSize(1).containsExactly(domain);
@@ -60,8 +78,7 @@ public class ModuleCalculatorTest {
 	Path root = baseDir.toPath();
 	List<ScmFile> changeList = Arrays.asList(
 		new ScmFile("domain/src/main/java/com/test.java", ScmFileStatus.MODIFIED),
-		new ScmFile("assembly/pom.xml", ScmFileStatus.MODIFIED)
-	);
+		new ScmFile("assembly/pom.xml", ScmFileStatus.MODIFIED));
 	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
 
 	assertThat(changedModules).hasSize(2).containsOnly(domain, assembly);
@@ -72,9 +89,8 @@ public class ModuleCalculatorTest {
 	Path root = baseDir.toPath();
 	List<ScmFile> changeList = Arrays.asList(
 		new ScmFile("domain/src/main/java/com/test.java", ScmFileStatus.MODIFIED),
-		new ScmFile("domain/src/main/java/Anton.java", ScmFileStatus.MODIFIED), 
-		new ScmFile("assembly/pom.xml", ScmFileStatus.MODIFIED)
-	);
+		new ScmFile("domain/src/main/java/Anton.java", ScmFileStatus.MODIFIED),
+		new ScmFile("assembly/pom.xml", ScmFileStatus.MODIFIED));
 
 	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
 
@@ -84,10 +100,8 @@ public class ModuleCalculatorTest {
     @Test
     public void shouldResultInTwoModulesDomainAndSubDomain() {
 	Path root = baseDir.toPath();
-	List<ScmFile> changeList = Arrays.asList(
-		new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
-		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED)
-	);
+	List<ScmFile> changeList = Arrays.asList(new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
+		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED));
 	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
 
 	assertThat(changedModules).hasSize(2).containsOnly(domain, subdomain);
@@ -95,14 +109,11 @@ public class ModuleCalculatorTest {
 
     @Test
     public void shouldResultInThreeModules() {
-	//TODO: Think about this test case. What
+	// TODO: Think about this test case. What
 	// should be returned for the root module ?
 	Path root = baseDir.toPath();
-	List<ScmFile> changeList = Arrays.asList(
-		new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
-		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED),
-		new ScmFile("pom.xml", ScmFileStatus.MODIFIED)
-	);
+	List<ScmFile> changeList = Arrays.asList(new ScmFile("domain/subdomain/pom.xml", ScmFileStatus.MODIFIED),
+		new ScmFile("domain/pom.xml", ScmFileStatus.MODIFIED), new ScmFile("pom.xml", ScmFileStatus.MODIFIED));
 	System.out.println("shouldResultInThreeModules");
 	List<MavenProject> changedModules = ModuleCalculator.calculateChangedModules(root, projectList, changeList);
 
