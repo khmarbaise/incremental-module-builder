@@ -14,7 +14,7 @@ Status
 ------
 
  * Currently in PoC state.
- * Code needs improvments.
+ * Code needs improvements.
  * Need to write more tests / integration tests.
 
 
