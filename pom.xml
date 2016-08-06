@@ -12,15 +12,22 @@
 
   <groupId>com.soebes.maven.extensions</groupId>
   <artifactId>incremental-module-builder</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <name>Maven Incremental Module Builder</name>
 
   <properties>
     <mavenVersion>3.2.5</mavenVersion>
     <gmaven-plugin.version>1.5</gmaven-plugin.version>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+    <smpp.component>incremental-module-builder</smpp.component>
   </properties>
 
+  <scm>
+    <developerConnection>scm:git:ssh://git@github.com/khmarbaise/incremental-module-builder.git</developerConnection>
+    <connection>scm:git:https://github.com/khmarbaise/incremental-module-builder.git</connection>
+    <url>https://github.com/khmarbaise/incremental-module-builder/</url>
+    <tag>HEAD</tag>
+  </scm>
   <dependencies>
 
     <dependency>
@@ -161,6 +168,12 @@
     </dependency>
 
   </dependencies>
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:git@github.com:khmarbaise/incremental-module-builder.git</url>
+    </site>
+  </distributionManagement>
 
   <build>
     <plugins>
