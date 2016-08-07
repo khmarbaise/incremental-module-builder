@@ -84,19 +84,19 @@ class IncrementalModuleBuilderImpl {
     public void build() throws ExecutionException, InterruptedException {
 	this.mavenSession.setProjects(this.projects);
 
-	logger.info("Starting building Calculated Reactor:");
+	logger.info("New Calculated Reactor:");
 	for (MavenProject mavenProject : this.mavenSession.getProjects()) {
 	    logger.info(" {}", mavenProject.getName());
 	}
 
 	for (TaskSegment taskSegment : this.taskSegments) {
-	    logger.info("Segment");
+	    logger.debug("Segment");
 	    List<Object> tasks = taskSegment.getTasks();
 	    for (Object task : tasks) {
-		logger.info(" Task:" + task);
+		logger.debug(" Task:" + task);
 	    }
 	    for (MavenProject mavenProject : mavenSession.getProjects()) {
-		logger.info("Project: {}", mavenProject.getId());
+		logger.info("Building project: {}", mavenProject.getId());
 		lifecycleModuleBuilder.buildProject(mavenSession, reactorContext, mavenProject, taskSegment);
 	    }
 	}

@@ -67,6 +67,8 @@ public class IncrementalModuleBuilder implements Builder {
     public IncrementalModuleBuilder(LifecycleModuleBuilder lifecycleModuleBuilder) {
 	LOGGER.info(" ------------------------------------");
 	LOGGER.info(" Maven Incremental Module Builder");
+	LOGGER.info(" Version: {}", IncrementalModuleBuilderVersion.getVersion());
+	LOGGER.debug("     SHA: {}", IncrementalModuleBuilderVersion.getRevision());
 	LOGGER.info(" ------------------------------------");
 	this.lifecycleModuleBuilder = lifecycleModuleBuilder;
     }
@@ -100,7 +102,7 @@ public class IncrementalModuleBuilder implements Builder {
 	if (!havingScmDeveloperConnection(session)) {
 	    return;
 	}
-	
+
 	// TODO: Make more separation of concerns..(Extract the SCM Code from
 	// here?
 	ScmRepository repository = null;
