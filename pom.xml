@@ -44,6 +44,7 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-annotations</artifactId>
       <version>1.7</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

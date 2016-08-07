@@ -21,7 +21,7 @@ Status
 Prerequisites
 -------------
 
- * Using Maven 3.3.1+
+ * Maven 3.3.1+
  * Java 7 (as Maven 3.3.1+).
 
 How to Configure?
