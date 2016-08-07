@@ -205,7 +205,7 @@ simply this can be achieved by using the following command line:
 ```
 mvn -b multithreaded package
 ```
-The option `multithreaded` defines the default builder. This means you have turned off
+The `multithreaded` defines the default builder. This means you have turned off
 the incremental module builder.
 
 ToDo
