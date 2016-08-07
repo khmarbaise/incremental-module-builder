@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SecondTest extends PlexusTestCase {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecondTest.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     protected void setUp() throws Exception {
 	super.setUp();
