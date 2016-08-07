@@ -17,7 +17,6 @@ Status
  * Code needs improvements.
  * Need to write more tests / integration tests.
 
-
 Prerequisites
 -------------
 
