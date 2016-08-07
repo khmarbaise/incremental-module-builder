@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Incremental Builder behaviour.
+ * Incremental Module Builder behaviour.
  * 
  * @author Karl Heinz Marbaise <khmarbaise@apache.org>
  * 
@@ -78,7 +78,7 @@ public class IncrementalModuleBuilder implements Builder {
 	}
 
 	if (StringUtils.isEmpty(session.getTopLevelProject().getScm().getDeveloperConnection())) {
-	    LOGGER.error("The incremental module builder needs the scm developerConnection.");
+	    LOGGER.error("The incremental module builder needs the scm developerConnection to work properly.");
 	    return false;
 	}
 
@@ -95,19 +95,17 @@ public class IncrementalModuleBuilder implements Builder {
 	    LOGGER.info("Not executing in root.");
 	}
 
+	Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
+
 	if (!havingScmDeveloperConnection(session)) {
 	    return;
 	}
-
-	Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
-
+	
 	// TODO: Make more separation of concerns..(Extract the SCM Code from
 	// here?
 	ScmRepository repository = null;
 	try {
 	    // Assumption: top level project contains the SCM entry.
-	    // More checks missing..
-	    // TODO: check for null in chaining
 	    repository = scmManager.makeScmRepository(session.getTopLevelProject().getScm().getDeveloperConnection());
 	} catch (ScmRepositoryException | NoSuchScmProviderException e) {
 	    LOGGER.error("Failure during makeScmRepository", e);
@@ -128,15 +126,13 @@ public class IncrementalModuleBuilder implements Builder {
 	} else {
 
 	    for (ScmFile scmFile : changedFiles) {
-		LOGGER.info(" scmFile: " + scmFile.getPath() + " " + scmFile.getStatus());
+		LOGGER.info(" Changed file: " + scmFile.getPath() + " " + scmFile.getStatus());
 	    }
 
 	    ModuleCalculator mc = new ModuleCalculator(session.getProjectDependencyGraph().getSortedProjects(),
 		    changedFiles);
 	    List<MavenProject> calculateChangedModules = mc.calculateChangedModules(projectRootpath);
 
-	    // TODO: Think about if we got only pom packaging modules? Do we
-	    // need to do something special there?
 	    for (MavenProject mavenProject : calculateChangedModules) {
 		LOGGER.info("Changed Project: " + mavenProject.getId());
 	    }
@@ -144,7 +140,7 @@ public class IncrementalModuleBuilder implements Builder {
 	    IncrementalModuleBuilderImpl incrementalModuleBuilderImpl = new IncrementalModuleBuilderImpl(
 		    calculateChangedModules, lifecycleModuleBuilder, session, reactorContext, taskSegments);
 
-	    //Really build only changed modules.
+	    // Really build only changed modules.
 	    incrementalModuleBuilderImpl.build();
 	}
     }

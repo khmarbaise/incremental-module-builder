@@ -199,9 +199,14 @@ the `.mvn/maven.config` like this ([see Release Notes][release-notes]):
 ```
 -b incremental
 ```
+So now you can call Maven simply via `mvn package`. If you want to run the usual build
+simply this can be achieved by using the following command line:
 
-So now you can call Maven simply via `mvn package`.
-
+```
+mvn -b multithreaded package
+```
+The option `multithreaded` defines the default builder. This means you have turned off
+the incremental module builder.
 
 ToDo
 ----

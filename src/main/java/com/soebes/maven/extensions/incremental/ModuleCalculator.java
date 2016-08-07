@@ -61,6 +61,8 @@ public class ModuleCalculator {
      * @return The list of modules which needed to be rebuilt.
      */
     public List<MavenProject> calculateChangedModules(Path projectRootpath) {
+	// TODO: Think about if we got only pom packaging modules? Do we
+	// need to do something special there?
 	List<MavenProject> result = new ArrayList<>();
 	for (MavenProject project : projectList) {
 	    Path relativize = projectRootpath.relativize(project.getBasedir().toPath());
