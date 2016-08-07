@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.internal.LifecycleModuleBuilder;
 import org.apache.maven.lifecycle.internal.ProjectBuildList;
@@ -70,13 +71,32 @@ public class IncrementalModuleBuilder implements Builder {
 	this.lifecycleModuleBuilder = lifecycleModuleBuilder;
     }
 
+    private boolean havingScmDeveloperConnection(MavenSession session) {
+	if (session.getTopLevelProject().getScm() == null) {
+	    LOGGER.error("The incremental module builder needs a correct scm configuration.");
+	    return false;
+	}
+
+	if (StringUtils.isEmpty(session.getTopLevelProject().getScm().getDeveloperConnection())) {
+	    LOGGER.error("The incremental module builder needs the scm developerConnection.");
+	    return false;
+	}
+
+	return true;
+    }
+
     @Override
     public void build(final MavenSession session, final ReactorContext reactorContext, ProjectBuildList projectBuilds,
 	    final List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus)
 	    throws ExecutionException, InterruptedException {
 
+	// Think about this?
 	if (!session.getCurrentProject().isExecutionRoot()) {
 	    LOGGER.info("Not executing in root.");
+	}
+
+	if (!havingScmDeveloperConnection(session)) {
+	    return;
 	}
 
 	Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
@@ -90,8 +110,7 @@ public class IncrementalModuleBuilder implements Builder {
 	    // TODO: check for null in chaining
 	    repository = scmManager.makeScmRepository(session.getTopLevelProject().getScm().getDeveloperConnection());
 	} catch (ScmRepositoryException | NoSuchScmProviderException e) {
-	    // Better error handling?
-	    e.printStackTrace();
+	    LOGGER.error("Failure during makeScmRepository", e);
 	    return;
 	}
 
@@ -99,8 +118,8 @@ public class IncrementalModuleBuilder implements Builder {
 	try {
 	    result = scmManager.status(repository, new ScmFileSet(session.getTopLevelProject().getBasedir()));
 	} catch (ScmException e) {
-	    // Better error handling?
-	    e.printStackTrace();
+	    LOGGER.error("Failure during status", e);
+	    return;
 	}
 
 	List<ScmFile> changedFiles = result.getChangedFiles();
@@ -121,9 +140,12 @@ public class IncrementalModuleBuilder implements Builder {
 	    for (MavenProject mavenProject : calculateChangedModules) {
 		LOGGER.info("Changed Project: " + mavenProject.getId());
 	    }
-	    // Change the reactor.
-	    new IncrementalModuleBuilderImpl(calculateChangedModules, lifecycleModuleBuilder, session, reactorContext,
-		    taskSegments).build();
+
+	    IncrementalModuleBuilderImpl incrementalModuleBuilderImpl = new IncrementalModuleBuilderImpl(
+		    calculateChangedModules, lifecycleModuleBuilder, session, reactorContext, taskSegments);
+
+	    //Really build only changed modules.
+	    incrementalModuleBuilderImpl.build();
 	}
     }
 

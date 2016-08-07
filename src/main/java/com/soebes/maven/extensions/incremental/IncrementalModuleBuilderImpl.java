@@ -21,6 +21,7 @@ package com.soebes.maven.extensions.incremental;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.maven.execution.MavenSession;
@@ -37,14 +38,23 @@ import org.slf4j.LoggerFactory;
  */
 class IncrementalModuleBuilderImpl {
 
-    private final Logger logger = LoggerFactory.getLogger(IncrementalModuleBuilderImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    // private final LifecycleModuleBuilder lifecycleModuleBuilder;
+    private MavenSession mavenSession;
+    private List<MavenProject> projects;
+    private List<TaskSegment> taskSegments;
+    private ReactorContext reactorContext;
+
+    private final LifecycleModuleBuilder lifecycleModuleBuilder;
 
     IncrementalModuleBuilderImpl(List<MavenProject> selectedProjects, LifecycleModuleBuilder lifecycleModuleBuilder,
 	    MavenSession session, ReactorContext reactorContext, List<TaskSegment> taskSegments) {
 
-	// FIXME: Move the execution out of ctor ?
+	this.lifecycleModuleBuilder = Objects.requireNonNull(lifecycleModuleBuilder,
+		"lifecycleModuleBuilder is not allowed to be null.");
+	this.mavenSession = Objects.requireNonNull(session, "session is not allowed to be null.");
+	this.taskSegments = Objects.requireNonNull(taskSegments, "taskSegements is not allowed to be null");
+	this.reactorContext = Objects.requireNonNull(reactorContext, "reactorContext is not allowed to be null.");
 
 	ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
 
@@ -67,23 +77,29 @@ class IncrementalModuleBuilderImpl {
 	    }
 	}
 
-	session.setProjects(result);
+	this.projects = result;
 
-	logger.info("Calculated Reactor Order:");
-	for (MavenProject mavenProject : session.getProjects()) {
-	    logger.info(" {}", mavenProject.getName());
-	}
-
-	for (TaskSegment taskSegment : taskSegments) {
-	    for (MavenProject mavenProject : session.getProjects()) {
-		logger.info("Project: {}", mavenProject.getId());
-		lifecycleModuleBuilder.buildProject(session, reactorContext, mavenProject, taskSegment);
-	    }
-	}
     }
 
     public void build() throws ExecutionException, InterruptedException {
-	logger.info("Starting building");
+	this.mavenSession.setProjects(this.projects);
+
+	logger.info("Starting building Calculated Reactor:");
+	for (MavenProject mavenProject : this.mavenSession.getProjects()) {
+	    logger.info(" {}", mavenProject.getName());
+	}
+
+	for (TaskSegment taskSegment : this.taskSegments) {
+	    logger.info("Segment");
+	    List<Object> tasks = taskSegment.getTasks();
+	    for (Object task : tasks) {
+		logger.info(" Task:" + task);
+	    }
+	    for (MavenProject mavenProject : mavenSession.getProjects()) {
+		logger.info("Project: {}", mavenProject.getId());
+		lifecycleModuleBuilder.buildProject(mavenSession, reactorContext, mavenProject, taskSegment);
+	    }
+	}
     }
 
 }
