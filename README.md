@@ -1,7 +1,7 @@
 # Maven Incremental Module Builder
 
 [![Build Status](https://travis-ci.org/khmarbaise/incremental-module-builder.svg?branch=master)](https://travis-ci.org/khmarbaise/incremental-module-builder)
-[![Maven Central](https://img.shields.io/maven-central/v/com.soebes.maven.plugins/incremental-module-builder.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Ccom.soebes.maven.plugins)
+[![Maven Central](https://img.shields.io/maven-central/v/com.soebes.maven.extensions/incremental-module-builder.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Ccom.soebes.maven.extensions)
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/khmarbaise/incremental-module-builder.svg?label=License)](http://www.apache.org/licenses/)
 
 If you are working with larger builds sometimes it is worth to think
