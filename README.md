@@ -36,7 +36,7 @@ define the following in your `.mvn/extensions.xml` file:
   <extension>
     <groupId>com.soebes.maven.extensions</groupId>
     <artifactId>incremental-module-builder</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </extension>
 </extensions>
 ```
