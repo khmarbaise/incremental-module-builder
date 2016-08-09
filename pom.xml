@@ -9,7 +9,7 @@
 
   <groupId>com.soebes.maven.extensions</groupId>
   <artifactId>incremental-module-builder</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1-SNAPSHOT</version>
   <name>Maven Incremental Module Builder</name>
 
   <properties>
@@ -23,7 +23,7 @@
     <developerConnection>scm:git:ssh://git@github.com/khmarbaise/incremental-module-builder.git</developerConnection>
     <connection>scm:git:https://github.com/khmarbaise/incremental-module-builder.git</connection>
     <url>https://github.com/khmarbaise/incremental-module-builder/</url>
-    <tag>incremental-module-builder-0.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <dependencies>
 
