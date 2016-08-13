@@ -100,6 +100,8 @@ public class IncrementalModuleBuilder implements Builder {
 	Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
 
 	if (!havingScmDeveloperConnection(session)) {
+	    LOGGER.warn("There is no scm developer connection configured.");
+	    LOGGER.warn("So we can't estimate which modules have changed.");
 	    return;
 	}
 
