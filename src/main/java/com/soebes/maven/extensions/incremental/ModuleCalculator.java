@@ -32,51 +32,53 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Karl Heinz Marbaise <khmarbaise@apache.org>
- *
  */
-public class ModuleCalculator {
-    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
+public class ModuleCalculator
+{
+    private final Logger logger = LoggerFactory.getLogger( getClass().getName() );
 
     private List<MavenProject> projectList;
 
     private List<ScmFile> changeList;
 
     /**
-     * @param projectList
-     *            The list of Maven Projects which are in the reactor.
-     * @param changeList
-     *            The list of changes within this structure.
+     * @param projectList The list of Maven Projects which are in the reactor.
+     * @param changeList The list of changes within this structure.
      */
-    public ModuleCalculator(List<MavenProject> projectList, List<ScmFile> changeList) {
-	this.projectList = Objects.requireNonNull(projectList, "projectList is not allowed to be null.");
-	this.changeList = Objects.requireNonNull(changeList, "changeList is not allowed to be null.");
+    public ModuleCalculator( List<MavenProject> projectList, List<ScmFile> changeList )
+    {
+        this.projectList = Objects.requireNonNull( projectList, "projectList is not allowed to be null." );
+        this.changeList = Objects.requireNonNull( changeList, "changeList is not allowed to be null." );
     }
 
     /**
-     * Calculate the modules which needed to be rebuilt based on the list of
-     * changes from SCM.
+     * Calculate the modules which needed to be rebuilt based on the list of changes from SCM.
      * 
-     * @param projectRootpath
-     *            Root path of the project.
+     * @param projectRootpath Root path of the project.
      * @return The list of modules which needed to be rebuilt.
      */
-    public List<MavenProject> calculateChangedModules(Path projectRootpath) {
-	// TODO: Think about if we got only pom packaging modules? Do we
-	// need to do something special there?
-	List<MavenProject> result = new ArrayList<>();
-	for (MavenProject project : projectList) {
-	    Path relativize = projectRootpath.relativize(project.getBasedir().toPath());
-	    for (ScmFile fileItem : changeList) {
-		boolean startsWith = new File(fileItem.getPath()).toPath().startsWith(relativize);
-		logger.debug("startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize);
-		if (startsWith) {
-		    if (!result.contains(project)) {
-			result.add(project);
-		    }
-		}
-	    }
-	}
-	return result;
+    public List<MavenProject> calculateChangedModules( Path projectRootpath )
+    {
+        // TODO: Think about if we got only pom packaging modules? Do we
+        // need to do something special there?
+        List<MavenProject> result = new ArrayList<>();
+        for ( MavenProject project : projectList )
+        {
+            Path relativize = projectRootpath.relativize( project.getBasedir().toPath() );
+            for ( ScmFile fileItem : changeList )
+            {
+                boolean startsWith = new File( fileItem.getPath() ).toPath().startsWith( relativize );
+                logger.debug( "startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize );
+                if ( startsWith )
+                {
+                    if ( !result.contains( project ) )
+                    {
+                        result.add( project );
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 }

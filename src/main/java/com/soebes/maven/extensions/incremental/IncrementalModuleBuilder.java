@@ -51,12 +51,13 @@ import org.slf4j.LoggerFactory;
  * Incremental Module Builder behaviour.
  * 
  * @author Karl Heinz Marbaise <khmarbaise@apache.org>
- * 
  */
 @Singleton
-@Named("incremental")
-public class IncrementalModuleBuilder implements Builder {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+@Named( "incremental" )
+public class IncrementalModuleBuilder
+    implements Builder
+{
+    private final Logger LOGGER = LoggerFactory.getLogger( getClass() );
 
     private final LifecycleModuleBuilder lifecycleModuleBuilder;
 
@@ -64,89 +65,108 @@ public class IncrementalModuleBuilder implements Builder {
     private ScmManager scmManager;
 
     @Inject
-    public IncrementalModuleBuilder(LifecycleModuleBuilder lifecycleModuleBuilder) {
-	LOGGER.info(" ------------------------------------");
-	LOGGER.info(" Maven Incremental Module Builder");
-	LOGGER.info(" Version: {}", IncrementalModuleBuilderVersion.getVersion());
-	LOGGER.debug("     SHA: {}", IncrementalModuleBuilderVersion.getRevision());
-	LOGGER.info(" ------------------------------------");
-	this.lifecycleModuleBuilder = lifecycleModuleBuilder;
+    public IncrementalModuleBuilder( LifecycleModuleBuilder lifecycleModuleBuilder )
+    {
+        LOGGER.info( " ------------------------------------" );
+        LOGGER.info( " Maven Incremental Module Builder" );
+        LOGGER.info( " Version: {}", IncrementalModuleBuilderVersion.getVersion() );
+        LOGGER.debug( "     SHA: {}", IncrementalModuleBuilderVersion.getRevision() );
+        LOGGER.info( " ------------------------------------" );
+        this.lifecycleModuleBuilder = lifecycleModuleBuilder;
     }
 
-    private boolean havingScmDeveloperConnection(MavenSession session) {
-	if (session.getTopLevelProject().getScm() == null) {
-	    LOGGER.error("The incremental module builder needs a correct scm configuration.");
-	    return false;
-	}
+    private boolean havingScmDeveloperConnection( MavenSession session )
+    {
+        if ( session.getTopLevelProject().getScm() == null )
+        {
+            LOGGER.error( "The incremental module builder needs a correct scm configuration." );
+            return false;
+        }
 
-	if (StringUtils.isEmpty(session.getTopLevelProject().getScm().getDeveloperConnection())) {
-	    LOGGER.error("The incremental module builder needs the scm developerConnection to work properly.");
-	    return false;
-	}
+        if ( StringUtils.isEmpty( session.getTopLevelProject().getScm().getDeveloperConnection() ) )
+        {
+            LOGGER.error( "The incremental module builder needs the scm developerConnection to work properly." );
+            return false;
+        }
 
-	return true;
+        return true;
     }
 
     @Override
-    public void build(final MavenSession session, final ReactorContext reactorContext, ProjectBuildList projectBuilds,
-	    final List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus)
-	    throws ExecutionException, InterruptedException {
+    public void build( final MavenSession session, final ReactorContext reactorContext, ProjectBuildList projectBuilds,
+                       final List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus )
+        throws ExecutionException, InterruptedException
+    {
 
-	// Think about this?
-	if (!session.getCurrentProject().isExecutionRoot()) {
-	    LOGGER.info("Not executing in root.");
-	}
+        // Think about this?
+        if ( !session.getCurrentProject().isExecutionRoot() )
+        {
+            LOGGER.info( "Not executing in root." );
+        }
 
-	Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
+        Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
 
-	if (!havingScmDeveloperConnection(session)) {
-	    LOGGER.warn("There is no scm developer connection configured.");
-	    LOGGER.warn("So we can't estimate which modules have changed.");
-	    return;
-	}
+        if ( !havingScmDeveloperConnection( session ) )
+        {
+            LOGGER.warn( "There is no scm developer connection configured." );
+            LOGGER.warn( "So we can't estimate which modules have changed." );
+            return;
+        }
 
-	// TODO: Make more separation of concerns..(Extract the SCM Code from
-	// here?
-	ScmRepository repository = null;
-	try {
-	    // Assumption: top level project contains the SCM entry.
-	    repository = scmManager.makeScmRepository(session.getTopLevelProject().getScm().getDeveloperConnection());
-	} catch (ScmRepositoryException | NoSuchScmProviderException e) {
-	    LOGGER.error("Failure during makeScmRepository", e);
-	    return;
-	}
+        // TODO: Make more separation of concerns..(Extract the SCM Code from
+        // here?
+        ScmRepository repository = null;
+        try
+        {
+            // Assumption: top level project contains the SCM entry.
+            repository = scmManager.makeScmRepository( session.getTopLevelProject().getScm().getDeveloperConnection() );
+        }
+        catch ( ScmRepositoryException | NoSuchScmProviderException e )
+        {
+            LOGGER.error( "Failure during makeScmRepository", e );
+            return;
+        }
 
-	StatusScmResult result = null;
-	try {
-	    result = scmManager.status(repository, new ScmFileSet(session.getTopLevelProject().getBasedir()));
-	} catch (ScmException e) {
-	    LOGGER.error("Failure during status", e);
-	    return;
-	}
+        StatusScmResult result = null;
+        try
+        {
+            result = scmManager.status( repository, new ScmFileSet( session.getTopLevelProject().getBasedir() ) );
+        }
+        catch ( ScmException e )
+        {
+            LOGGER.error( "Failure during status", e );
+            return;
+        }
 
-	List<ScmFile> changedFiles = result.getChangedFiles();
-	if (changedFiles.isEmpty()) {
-	    LOGGER.info(" Nothing has been changed.");
-	} else {
+        List<ScmFile> changedFiles = result.getChangedFiles();
+        if ( changedFiles.isEmpty() )
+        {
+            LOGGER.info( " Nothing has been changed." );
+        }
+        else
+        {
 
-	    for (ScmFile scmFile : changedFiles) {
-		LOGGER.info(" Changed file: " + scmFile.getPath() + " " + scmFile.getStatus());
-	    }
+            for ( ScmFile scmFile : changedFiles )
+            {
+                LOGGER.info( " Changed file: " + scmFile.getPath() + " " + scmFile.getStatus() );
+            }
 
-	    ModuleCalculator mc = new ModuleCalculator(session.getProjectDependencyGraph().getSortedProjects(),
-		    changedFiles);
-	    List<MavenProject> calculateChangedModules = mc.calculateChangedModules(projectRootpath);
+            ModuleCalculator mc =
+                new ModuleCalculator( session.getProjectDependencyGraph().getSortedProjects(), changedFiles );
+            List<MavenProject> calculateChangedModules = mc.calculateChangedModules( projectRootpath );
 
-	    for (MavenProject mavenProject : calculateChangedModules) {
-		LOGGER.info("Changed Project: " + mavenProject.getId());
-	    }
+            for ( MavenProject mavenProject : calculateChangedModules )
+            {
+                LOGGER.info( "Changed Project: " + mavenProject.getId() );
+            }
 
-	    IncrementalModuleBuilderImpl incrementalModuleBuilderImpl = new IncrementalModuleBuilderImpl(
-		    calculateChangedModules, lifecycleModuleBuilder, session, reactorContext, taskSegments);
+            IncrementalModuleBuilderImpl incrementalModuleBuilderImpl =
+                new IncrementalModuleBuilderImpl( calculateChangedModules, lifecycleModuleBuilder, session,
+                                                  reactorContext, taskSegments );
 
-	    // Really build only changed modules.
-	    incrementalModuleBuilderImpl.build();
-	}
+            // Really build only changed modules.
+            incrementalModuleBuilderImpl.build();
+        }
     }
 
 }

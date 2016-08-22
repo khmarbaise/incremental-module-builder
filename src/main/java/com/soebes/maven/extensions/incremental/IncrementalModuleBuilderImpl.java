@@ -36,70 +36,84 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Karl Heinz Marbaise <khmabaise@apache.org>
  */
-class IncrementalModuleBuilderImpl {
+class IncrementalModuleBuilderImpl
+{
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger( getClass() );
 
     private MavenSession mavenSession;
+
     private List<MavenProject> projects;
+
     private List<TaskSegment> taskSegments;
+
     private ReactorContext reactorContext;
 
     private final LifecycleModuleBuilder lifecycleModuleBuilder;
 
-    IncrementalModuleBuilderImpl(List<MavenProject> selectedProjects, LifecycleModuleBuilder lifecycleModuleBuilder,
-	    MavenSession session, ReactorContext reactorContext, List<TaskSegment> taskSegments) {
+    IncrementalModuleBuilderImpl( List<MavenProject> selectedProjects, LifecycleModuleBuilder lifecycleModuleBuilder,
+                                  MavenSession session, ReactorContext reactorContext, List<TaskSegment> taskSegments )
+    {
 
-	this.lifecycleModuleBuilder = Objects.requireNonNull(lifecycleModuleBuilder,
-		"lifecycleModuleBuilder is not allowed to be null.");
-	this.mavenSession = Objects.requireNonNull(session, "session is not allowed to be null.");
-	this.taskSegments = Objects.requireNonNull(taskSegments, "taskSegements is not allowed to be null");
-	this.reactorContext = Objects.requireNonNull(reactorContext, "reactorContext is not allowed to be null.");
+        this.lifecycleModuleBuilder =
+            Objects.requireNonNull( lifecycleModuleBuilder, "lifecycleModuleBuilder is not allowed to be null." );
+        this.mavenSession = Objects.requireNonNull( session, "session is not allowed to be null." );
+        this.taskSegments = Objects.requireNonNull( taskSegments, "taskSegements is not allowed to be null" );
+        this.reactorContext = Objects.requireNonNull( reactorContext, "reactorContext is not allowed to be null." );
 
-	ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
+        ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
 
-	List<MavenProject> intermediateResult = new LinkedList<>();
+        List<MavenProject> intermediateResult = new LinkedList<>();
 
-	for (MavenProject selectedProject : selectedProjects) {
-	    intermediateResult.add(selectedProject);
-	    // Up or downstream ? (-amd)
-	    intermediateResult.addAll(projectDependencyGraph.getDownstreamProjects(selectedProject, true));
-	    // TODO: Need to think about this? -am ?
-	    // intermediateResult.addAll(projectDependencyGraph.getUpstreamProjects(selectedProject,
-	    // true));
-	}
+        for ( MavenProject selectedProject : selectedProjects )
+        {
+            intermediateResult.add( selectedProject );
+            // Up or downstream ? (-amd)
+            intermediateResult.addAll( projectDependencyGraph.getDownstreamProjects( selectedProject, true ) );
+            // TODO: Need to think about this? -am ?
+            // intermediateResult.addAll(projectDependencyGraph.getUpstreamProjects(selectedProject,
+            // true));
+        }
 
-	List<MavenProject> result = new LinkedList<>();
+        List<MavenProject> result = new LinkedList<>();
 
-	for (MavenProject project : intermediateResult) {
-	    if (!result.contains(project)) {
-		result.add(project);
-	    }
-	}
+        for ( MavenProject project : intermediateResult )
+        {
+            if ( !result.contains( project ) )
+            {
+                result.add( project );
+            }
+        }
 
-	this.projects = result;
+        this.projects = result;
 
     }
 
-    public void build() throws ExecutionException, InterruptedException {
-	this.mavenSession.setProjects(this.projects);
+    public void build()
+        throws ExecutionException, InterruptedException
+    {
+        this.mavenSession.setProjects( this.projects );
 
-	logger.info("New Calculated Reactor:");
-	for (MavenProject mavenProject : this.mavenSession.getProjects()) {
-	    logger.info(" {}", mavenProject.getName());
-	}
+        logger.info( "New Calculated Reactor:" );
+        for ( MavenProject mavenProject : this.mavenSession.getProjects() )
+        {
+            logger.info( " {}", mavenProject.getName() );
+        }
 
-	for (TaskSegment taskSegment : this.taskSegments) {
-	    logger.debug("Segment");
-	    List<Object> tasks = taskSegment.getTasks();
-	    for (Object task : tasks) {
-		logger.debug(" Task:" + task);
-	    }
-	    for (MavenProject mavenProject : mavenSession.getProjects()) {
-		logger.info("Building project: {}", mavenProject.getId());
-		lifecycleModuleBuilder.buildProject(mavenSession, reactorContext, mavenProject, taskSegment);
-	    }
-	}
+        for ( TaskSegment taskSegment : this.taskSegments )
+        {
+            logger.debug( "Segment" );
+            List<Object> tasks = taskSegment.getTasks();
+            for ( Object task : tasks )
+            {
+                logger.debug( " Task:" + task );
+            }
+            for ( MavenProject mavenProject : mavenSession.getProjects() )
+            {
+                logger.info( "Building project: {}", mavenProject.getId() );
+                lifecycleModuleBuilder.buildProject( mavenSession, reactorContext, mavenProject, taskSegment );
+            }
+        }
     }
 
 }
