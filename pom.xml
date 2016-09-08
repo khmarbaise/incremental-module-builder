@@ -217,22 +217,6 @@
         </executions>
       </plugin>
     
-<!--       <plugin> -->
-<!--         <groupId>org.eclipse.sisu</groupId> -->
-<!--         <artifactId>sisu-maven-plugin</artifactId> -->
-<!--         <version>0.3.3</version> -->
-<!--         <executions> -->
-<!--           <execution> -->
-<!--             <id>index-project</id> -->
-<!--             <goals> -->
-<!--               <goal>main-index</goal> -->
-<!--               <goal>test-index</goal> -->
-<!--             </goals> -->
-<!--           </execution> -->
-<!--         </executions> -->
-<!--       </plugin>     -->
-
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
