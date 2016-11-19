@@ -334,7 +334,7 @@
                     <extraArtifact>org.apache.maven.plugins:maven-failsafe-plugin:2.17:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.7:maven-plugin</extraArtifact>
                     <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.5.3:maven-plugin</extraArtifact>
-                    <extraArtifact>com.soebes.smpp:smpp:0.6.5:pom</extraArtifact>
+                    <extraArtifact>com.soebes.smpp:smpp:1.2.0:pom</extraArtifact>
                     <extraArtifact>org.testng:testng:6.8.8:jar</extraArtifact>
                     <extraArtifact>com.beust:jcommander:1.35:jar</extraArtifact>
                     <extraArtifacts>org.easytesting:fest-assert:1.4:jar</extraArtifacts>
