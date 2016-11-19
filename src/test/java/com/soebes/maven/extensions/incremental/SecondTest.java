@@ -36,48 +36,65 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SecondTest extends PlexusTestCase {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+public class SecondTest
+    extends PlexusTestCase
+{
+    private final Logger LOGGER = LoggerFactory.getLogger( getClass() );
 
-    protected void setUp() throws Exception {
-	super.setUp();
-	super.setupContainer();
+    protected void setUp()
+        throws Exception
+    {
+        super.setUp();
+        super.setupContainer();
     }
 
-    protected void tearDown() throws Exception {
-	super.tearDown();
+    protected void tearDown()
+        throws Exception
+    {
+        super.tearDown();
     }
 
-    private List<ScmFile> getChangedFiles() throws Exception {
-	ScmManager scmManager = (ScmManager) lookup(ScmManager.ROLE);
+    private List<ScmFile> getChangedFiles()
+        throws Exception
+    {
+        ScmManager scmManager = (ScmManager) lookup( ScmManager.ROLE );
 
-	assertThat(scmManager).isNotNull();
+        assertThat( scmManager ).isNotNull();
 
-	ScmRepository repository = null;
-	try {
-	    // TODO: This can be extracted from the pom file (scm connection).
-	    repository = scmManager.makeScmRepository("scm:git:ssh://git@github.com:khmarbaise/supose.git");
-	} catch (ScmRepositoryException | NoSuchScmProviderException e) {
-	    e.printStackTrace();
-	}
+        ScmRepository repository = null;
+        try
+        {
+            // TODO: This can be extracted from the pom file (scm connection).
+            repository = scmManager.makeScmRepository( "scm:git:ssh://git@github.com:khmarbaise/supose.git" );
+        }
+        catch ( ScmRepositoryException | NoSuchScmProviderException e )
+        {
+            e.printStackTrace();
+        }
 
-	StatusScmResult result = null;
-	try {
-	    result = scmManager.status(repository, new ScmFileSet(new File("/Users/kama/ws-git/supose")));
-	} catch (ScmException e) {
-	    e.printStackTrace();
-	}
+        StatusScmResult result = null;
+        try
+        {
+            result = scmManager.status( repository, new ScmFileSet( new File( "/Users/kama/ws-git/supose" ) ) );
+        }
+        catch ( ScmException e )
+        {
+            e.printStackTrace();
+        }
 
-	List<ScmFile> changedFiles = result.getChangedFiles();
-	for (ScmFile scmFile : changedFiles) {
-	    LOGGER.info(" file:" + scmFile.getPath() + " " + scmFile.getStatus());
-	}
-	return changedFiles;
+        List<ScmFile> changedFiles = result.getChangedFiles();
+        for ( ScmFile scmFile : changedFiles )
+        {
+            LOGGER.info( " file:" + scmFile.getPath() + " " + scmFile.getStatus() );
+        }
+        return changedFiles;
 
     }
 
-    public void testShouldGetChangesFiles() throws Exception {
-	getChangedFiles();
+    public void testShouldGetChangesFiles()
+        throws Exception
+    {
+        getChangedFiles();
     }
 
 }
