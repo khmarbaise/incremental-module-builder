@@ -1,13 +1,18 @@
 language: java
+
+env:
+  - MAVEN_VERSION=3.3.1
+  - MAVEN_VERSION=3.3.9
+
+install:
+  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+
+script:
+  - "./mvnw --show-version --errors --batch-mode -Prun-its clean verify"
+
 jdk:
   - openjdk7
   - oraclejdk8
 cache:
   directories:
   - $HOME/.m2/repository
-# Just skip installation step
-# cause everything is done
-# in script step.
-install: yes
-script:
-  - mvn -Prun-its clean verify
