@@ -36,12 +36,12 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
-      <version>1.7</version>
+      <version>1.7.1</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-annotations</artifactId>
-      <version>1.7</version>
+      <version>1.7.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -204,7 +204,7 @@
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>1.7</version>
+        <version>1.7.1</version>
         <executions>
           <execution>
             <id>generate-metadata</id>
