@@ -94,7 +94,7 @@ class IncrementalModuleBuilderImpl
     {
         this.mavenSession.setProjects( this.projects );
 
-        logger.info( "New Calculated Reactor:" );
+        logger.info( "Recalculated reactor:" );
         for ( MavenProject mavenProject : this.mavenSession.getProjects() )
         {
             logger.info( " {}", mavenProject.getName() );
@@ -102,11 +102,11 @@ class IncrementalModuleBuilderImpl
 
         for ( TaskSegment taskSegment : this.taskSegments )
         {
-            logger.debug( "Segment" );
+            logger.debug( "segment" );
             List<Object> tasks = taskSegment.getTasks();
             for ( Object task : tasks )
             {
-                logger.debug( " Task:" + task );
+                logger.debug( " task:" + task );
             }
             for ( MavenProject mavenProject : mavenSession.getProjects() )
             {
