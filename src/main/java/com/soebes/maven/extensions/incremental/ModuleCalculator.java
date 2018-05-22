@@ -19,10 +19,12 @@ package com.soebes.maven.extensions.incremental;
  * under the License.
  */
 
-import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.maven.project.MavenProject;
@@ -35,6 +37,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ModuleCalculator
 {
+    private static final Path PATH_ROOT = Paths.get("");
+
     private final Logger logger = LoggerFactory.getLogger( getClass().getName() );
 
     private List<MavenProject> projectList;
@@ -62,23 +66,48 @@ public class ModuleCalculator
         // TODO: Think about if we got only pom packaging modules? Do we
         // need to do something special there?
         List<MavenProject> result = new ArrayList<>();
+
+        Map<Path, MavenProject> projectsByPath = new HashMap<>();
         for ( MavenProject project : projectList )
         {
-            Path relativize = projectRootpath.relativize( project.getBasedir().toPath() );
-            for ( ScmFile fileItem : changeList )
+            projectsByPath.put( projectRootpath.relativize( project.getBasedir().toPath() ), project );
+        }
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "projectsByPath: " + projectsByPath );
+        }
+
+        for ( ScmFile fileItem : changeList )
+        {
+            MavenProject foundProject = findClosestMatchingProject( fileItem, projectsByPath );
+            // TODO: Fail if foundProject is null?
+            if ( logger.isDebugEnabled() )
             {
-                boolean startsWith = new File( fileItem.getPath() ).toPath().startsWith( relativize );
-                logger.debug( "startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize );
-                if ( startsWith )
-                {
-                    if ( !result.contains( project ) )
-                    {
-                        result.add( project );
-                    }
-                }
+                logger.debug( "foundProject for " + fileItem.getPath() + " : " + foundProject );
+            }
+            if ( foundProject != null && !result.contains( foundProject ) )
+            {
+                result.add( foundProject );
             }
         }
+
         return result;
     }
 
+    private MavenProject findClosestMatchingProject( ScmFile fileItem, Map<Path, MavenProject> projectsByPath ) {
+        Path path = Paths.get( fileItem.getPath() );
+        do
+        {
+            MavenProject project = projectsByPath.get( path );
+            if ( project != null )
+            {
+                return project;
+            }
+            Path parent = path.getParent();
+            path = parent == null && !path.equals(PATH_ROOT) ? PATH_ROOT : parent; 
+        }
+        while ( path != null );
+
+        return null;
+    }
 }

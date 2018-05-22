@@ -43,7 +43,7 @@ public class ModuleCalculatorTest
 
     private List<MavenProject> projectList;
 
-    private MavenProject parent = createProject( "parent", new File( baseDir, "." ) );
+    private MavenProject parent = createProject( "parent", baseDir );
 
     private MavenProject assembly = createProject( "assembly", new File( baseDir, "assembly" ) );
 
@@ -86,6 +86,17 @@ public class ModuleCalculatorTest
     }
 
     @Test
+    public void shouldResultInASingleModuleParent()
+    {
+        Path root = baseDir.toPath();
+        List<ScmFile> changeList = Arrays.asList( new ScmFile( "pom.xml", ScmFileStatus.MODIFIED ) );
+        moduleCalculator = new ModuleCalculator( projectList, changeList );
+        List<MavenProject> changedModules = moduleCalculator.calculateChangedModules( root );
+
+        assertThat( changedModules ).hasSize( 1 ).containsExactly( parent );
+    }
+
+    @Test
     public void shouldResultInTwoModules()
     {
         Path root = baseDir.toPath();
@@ -123,6 +134,17 @@ public class ModuleCalculatorTest
         List<MavenProject> changedModules = moduleCalculator.calculateChangedModules( root );
 
         assertThat( changedModules ).hasSize( 2 ).containsOnly( domain, subdomain );
+    }
+
+    @Test
+    public void shouldResultInOneModuleSubDomain()
+    {
+        Path root = baseDir.toPath();
+        List<ScmFile> changeList = Arrays.asList( new ScmFile( "domain/subdomain/pom.xml", ScmFileStatus.MODIFIED ) );
+        moduleCalculator = new ModuleCalculator( projectList, changeList );
+        List<MavenProject> changedModules = moduleCalculator.calculateChangedModules( root );
+
+        assertThat( changedModules ).hasSize( 1 ).containsOnly( subdomain );
     }
 
     @Ignore
