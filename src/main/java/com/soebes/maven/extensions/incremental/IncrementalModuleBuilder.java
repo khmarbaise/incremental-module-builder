@@ -20,7 +20,10 @@ package com.soebes.maven.extensions.incremental;
  */
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
@@ -36,9 +39,14 @@ import org.apache.maven.lifecycle.internal.ReactorContext;
 import org.apache.maven.lifecycle.internal.TaskSegment;
 import org.apache.maven.lifecycle.internal.builder.Builder;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.scm.ChangeFile;
+import org.apache.maven.scm.ChangeSet;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFile;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmRevision;
+import org.apache.maven.scm.command.changelog.ChangeLogScmRequest;
+import org.apache.maven.scm.command.changelog.ChangeLogSet;
 import org.apache.maven.scm.command.status.StatusScmResult;
 import org.apache.maven.scm.manager.NoSuchScmProviderException;
 import org.apache.maven.scm.manager.ScmManager;
@@ -127,18 +135,7 @@ public class IncrementalModuleBuilder
             return;
         }
 
-        StatusScmResult result = null;
-        try
-        {
-            result = scmManager.status( repository, new ScmFileSet( session.getTopLevelProject().getBasedir() ) );
-        }
-        catch ( ScmException e )
-        {
-            LOGGER.error( "Failure during status", e );
-            return;
-        }
-
-        List<ScmFile> changedFiles = result.getChangedFiles();
+        List<ScmFile> changedFiles = getChangedFiles( repository, session );
         if ( changedFiles.isEmpty() )
         {
             LOGGER.info( " Nothing has been changed." );
@@ -169,4 +166,62 @@ public class IncrementalModuleBuilder
         }
     }
 
+    public List<ScmFile> getChangedFiles( ScmRepository repository, MavenSession session )
+    {
+        Set<ScmFile> changedFiles = new HashSet<ScmFile>();
+        ScmFileSet scmFileSet = new ScmFileSet( session.getTopLevelProject().getBasedir() );
+
+        // Add from status
+
+        try
+        {
+            StatusScmResult statusResult = scmManager.status( repository, scmFileSet );
+            changedFiles.addAll( statusResult.getChangedFiles() );
+        }
+        catch ( ScmException e )
+        {
+            LOGGER.error( "Failure during status", e );
+        }
+
+        // Add from changeLog (if requested)
+
+        String startRev = session.getUserProperties().getProperty( "imb.startRev" );
+        if ( startRev != null )
+        {
+            ChangeLogScmRequest changeLogScmRequest = new ChangeLogScmRequest( repository, scmFileSet );
+            try
+            {
+                changeLogScmRequest.setStartRevision( new ScmRevision( startRev ) );
+
+                ChangeLogSet changeLogSet = scmManager.changeLog( changeLogScmRequest ).getChangeLog();
+                if ( changeLogSet != null )
+                {
+                    for ( ChangeSet changeSet : changeLogSet.getChangeSets() )
+                    {
+                        addChangeFiles( changeSet.getFiles(), changedFiles );
+                    }
+                }
+            }
+            catch ( ScmException e )
+            {
+                LOGGER.error( "Failure during status", e );
+            }
+        }
+
+        // TODO: Change to Set everywhere?
+        return new ArrayList<>( changedFiles );
+    }
+
+    private void addChangeFiles( List<ChangeFile> changeFiles, Set<ScmFile> scmFiles )
+    {
+        for ( ChangeFile changeFile : changeFiles )
+        {
+            scmFiles.add( new ScmFile( changeFile.getName(), changeFile.getAction() ) );
+            String originalName = changeFile.getOriginalName();
+            if ( originalName != null )
+            {
+                scmFiles.add( new ScmFile( originalName, changeFile.getAction() ) );
+            }
+        }
+    }
 }
