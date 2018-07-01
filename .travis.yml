@@ -1,10 +1,12 @@
 language: java
+sudo: false
 
 env:
   - MAVEN_VERSION=3.3.1
   - MAVEN_VERSION=3.3.9
   - MAVEN_VERSION=3.5.0
   - MAVEN_VERSION=3.5.3
+  - MAVEN_VERSION=3.5.4
 
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
@@ -15,6 +17,9 @@ script:
 jdk:
   - openjdk7
   - oraclejdk8
+  - openjdk9
+  - openjdk10
+
 cache:
   directories:
   - $HOME/.m2/repository
