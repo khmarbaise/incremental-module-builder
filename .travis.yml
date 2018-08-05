@@ -8,11 +8,13 @@ env:
   - MAVEN_VERSION=3.5.3
   - MAVEN_VERSION=3.5.4
 
+# '-Dhttps.protocols=TLSv1.2' is needed for Java 7 to access Central
+# https://central.sonatype.org/articles/2018/May/04/discontinued-support-for-tlsv11-and-below/
 install:
-  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION} -Dhttps.protocols=TLSv1.2"
 
 script:
-  - "./mvnw --show-version --errors --batch-mode -Prun-its clean verify"
+  - "./mvnw -Dhttps.protocols=TLSv1.2 --show-version --errors --batch-mode -Prun-its clean verify"
 
 jdk:
   - openjdk7
