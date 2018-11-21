@@ -9,7 +9,7 @@ env:
   - MAVEN_VERSION=3.6.0
 
 install:
-  - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
+  - "mvn -N io.takari:maven:wrapper:0.4.0 -Dmaven=${MAVEN_VERSION}"
 
 script:
   - "./mvnw --show-version --errors --batch-mode -Prun-its clean verify"
