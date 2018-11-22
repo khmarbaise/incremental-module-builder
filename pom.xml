@@ -19,6 +19,7 @@
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
     <smpp.component>incremental-module-builder</smpp.component>
 
+    <!-- overwrite some plugins explicit here, as we cannot raise parent-pom version (which brings java8 target version, and so will not run on java7) -->
     <maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
     <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>2.22.1</maven-surefire-report-plugin.version>
@@ -205,6 +206,15 @@
   </distributionManagement>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
