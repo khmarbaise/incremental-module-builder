@@ -1,7 +1,6 @@
 language: java
 
 env:
-  - MAVEN_VERSION=3.3.1
   - MAVEN_VERSION=3.3.9
   - MAVEN_VERSION=3.5.0
   - MAVEN_VERSION=3.5.3
@@ -19,6 +18,7 @@ jdk:
   - openjdk9
   - openjdk10
   - openjdk11
+  - openjdk12
 
 cache:
   directories:
