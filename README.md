@@ -24,8 +24,8 @@ Status
 Prerequisites
 -------------
 
- * Maven 3.3.1+
- * Java 7 (as Maven 3.3.1+).
+ * Maven 3.3.9+
+ * Java 8
 
 How to Configure?
 -----------------
@@ -40,7 +40,7 @@ define the following in your `.mvn/extensions.xml` file:
   <extension>
     <groupId>com.soebes.maven.extensions</groupId>
     <artifactId>incremental-module-builder</artifactId>
-    <version>0.3.0</version>
+    <version>0.2.0</version>
   </extension>
 </extensions>
 ```
