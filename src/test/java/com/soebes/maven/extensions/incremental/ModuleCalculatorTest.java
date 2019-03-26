@@ -51,6 +51,8 @@ public class ModuleCalculatorTest
 
     private MavenProject subdomain = createProject( "subdomain", new File( baseDir, "domain/subdomain" ) );
 
+    private MavenProject subsubdomain = createProject( "subsubdomain", new File( baseDir, "domain/subdomain/subsubdomain" ) );
+
     private ModuleCalculator moduleCalculator;
 
     @Before
@@ -61,6 +63,7 @@ public class ModuleCalculatorTest
         projectList.add( assembly );
         projectList.add( domain );
         projectList.add( subdomain );
+        projectList.add( subsubdomain );
     }
 
     private MavenProject createProject( String artifactId, File baseDir )
@@ -125,7 +128,7 @@ public class ModuleCalculatorTest
         assertThat( changedModules ).hasSize( 2 ).containsOnly( domain, subdomain );
     }
 
-    @Ignore
+    @Test
     public void shouldResultInThreeModules()
     {
         // TODO: Think about this test case. What
@@ -141,6 +144,19 @@ public class ModuleCalculatorTest
         List<MavenProject> changedModules = moduleCalculator.calculateChangedModules( root );
 
         assertThat( changedModules ).hasSize( 3 ).containsOnly( domain, subdomain, parent );
+    }
+
+    @Test
+    public void shouldReturnOnlyChangedModules() {
+        Path root = baseDir.toPath();
+        List<ScmFile> changeList = Arrays.asList(
+            new ScmFile( "domain/subdomain/subsubdomain/pom.xml", ScmFileStatus.MODIFIED ),
+            new ScmFile( "domain/pom.xml", ScmFileStatus.MODIFIED )
+        );
+        moduleCalculator = new ModuleCalculator( projectList, changeList );
+        List<MavenProject> changedModules = moduleCalculator.calculateChangedModules( root );
+
+        assertThat( changedModules ).hasSize( 2 ).containsOnly( subsubdomain, domain );
     }
 
 }
