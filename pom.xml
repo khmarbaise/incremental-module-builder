@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.soebes.smpp</groupId>
     <artifactId>smpp</artifactId>
-    <version>4.0.0</version>
+    <version>5.3.5</version>
   </parent>
 
   <groupId>com.soebes.maven.extensions</groupId>
@@ -13,6 +13,8 @@
   <name>Maven Incremental Module Builder</name>
 
   <properties>
+    <maven.compiler.source>7</maven.compiler.source>
+    <maven.compiler.target>7</maven.compiler.target>
     <scm.version>1.9.5</scm.version>
     <mavenVersion>3.3.1</mavenVersion>
     <gmaven-plugin.version>1.5</gmaven-plugin.version>
@@ -56,16 +58,19 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <version>3.20.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+      <version>3.12.4</version>
       <scope>test</scope>
     </dependency>
 
@@ -219,23 +224,6 @@
     
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>get-buildnumber</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
         <artifactId>templating-maven-plugin</artifactId>
         <executions>
           <execution>
@@ -301,6 +289,7 @@
               </dependency>
             </dependencies>
             <configuration>
+              <streamLogs>true</streamLogs>
               <addTestClassPath>true</addTestClassPath>
               <debug>false</debug>
               <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
@@ -309,7 +298,7 @@
               <showVersion>true</showVersion>
               <preBuildHookScript>setup</preBuildHookScript>
               <postBuildHookScript>verify</postBuildHookScript>
-              <settingsFile>src/it/settings.xml</settingsFile>
+<!--              <settingsFile>src/it/settings.xml</settingsFile>-->
               <!-- Currently working with more than one thread does not work, cause it is not guaranteed that the setup-config project
                 is build at first. see also http://jira.codehaus.org/browse/MINVOKER-147 -->
               <parallelThreads>1</parallelThreads>
@@ -324,22 +313,23 @@
                   <goal>install</goal>
                 </goals>
                 <configuration>
-                  <extraArtifacts>
-                    <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.5.2:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.6.1:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.5:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.17:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.surefire:surefire-testng:2.17:jar</extraArtifact>
-                    <extraArtifact>org.apache.maven.surefire:surefire-testng-utils:2.17:jar</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-failsafe-plugin:2.17:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.7:maven-plugin</extraArtifact>
-                    <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.5.3:maven-plugin</extraArtifact>
-                    <extraArtifact>com.soebes.smpp:smpp:1.2.0:pom</extraArtifact>
-                    <extraArtifact>org.testng:testng:6.8.8:jar</extraArtifact>
-                    <extraArtifact>com.beust:jcommander:1.35:jar</extraArtifact>
-                    <extraArtifacts>org.easytesting:fest-assert:1.4:jar</extraArtifacts>
-                    <extraArtifacts>org.easytesting:fest-assert-core:2.0M10:jar</extraArtifacts>
-                  </extraArtifacts>
+<!--                  <extraArtifacts>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.5.2:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.6.1:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.5:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.17:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.surefire:surefire-testng:2.17:jar</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.surefire:surefire-testng-utils:2.17:jar</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-failsafe-plugin:2.17:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.7:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.5.3:maven-plugin</extraArtifact>-->
+<!--                    <extraArtifact>junit:junit:4.13.2:jar</extraArtifact>-->
+<!--                    <extraArtifact>log4j:log4j:1.2.16</extraArtifact>-->
+<!--                    <extraArtifact>com.beust:jcommander:1.35:jar</extraArtifact>-->
+<!--                    <extraArtifacts>org.easytesting:fest-assert:1.4:jar</extraArtifacts>-->
+<!--                    <extraArtifacts>org.easytesting:fest-assert-core:2.0M10:jar</extraArtifacts>-->
+<!--                    <extraArtifact>com.soebes.smpp:smpp:1.2.0:pom</extraArtifact>-->
+<!--                  </extraArtifacts>-->
                 </configuration>
               </execution>
               <execution>
