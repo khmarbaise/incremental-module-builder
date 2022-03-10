@@ -92,10 +92,8 @@ class IncrementalModuleBuilderImpl
     public void build()
         throws ExecutionException, InterruptedException
     {
-        this.mavenSession.setProjects( this.projects );
-
         logger.info( "Recalculated reactor:" );
-        for ( MavenProject mavenProject : this.mavenSession.getProjects() )
+        for ( MavenProject mavenProject : this.projects )
         {
             logger.info( " {}", mavenProject.getName() );
         }
@@ -108,7 +106,7 @@ class IncrementalModuleBuilderImpl
             {
                 logger.debug( " task:" + task );
             }
-            for ( MavenProject mavenProject : mavenSession.getProjects() )
+            for ( MavenProject mavenProject : this.projects )
             {
                 logger.info( "Building project: {}", mavenProject.getId() );
                 lifecycleModuleBuilder.buildProject( mavenSession, reactorContext, mavenProject, taskSegment );

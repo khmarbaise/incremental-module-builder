@@ -62,22 +62,28 @@ public class ModuleCalculator
         // TODO: Think about if we got only pom packaging modules? Do we
         // need to do something special there?
         List<MavenProject> result = new ArrayList<>();
-        for ( MavenProject project : projectList )
+        for ( ScmFile fileItem : changeList )
         {
-            Path relativize = projectRootpath.relativize( project.getBasedir().toPath() );
-            for ( ScmFile fileItem : changeList )
+            MavenProject project = null;
+            int longestRelativePathLength = -1;
+            for ( MavenProject currProject : projectList )
             {
-                boolean startsWith = new File( fileItem.getPath() ).toPath().startsWith( relativize );
-                logger.debug( "startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize );
-                if ( startsWith )
+                Path relativize = projectRootpath.relativize( currProject.getBasedir().toPath() );
+                boolean startsWith = "".equals(relativize.toString()) || ".".equals(relativize.toString())
+                                     || new File(fileItem.getPath()).toPath().startsWith(relativize);
+                logger.debug("startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize);
+                int currRelativePathLength = relativize.toString().length();
+                if (startsWith && longestRelativePathLength < currRelativePathLength)
                 {
-                    if ( !result.contains( project ) )
-                    {
-                        result.add( project );
-                    }
+                    longestRelativePathLength = currRelativePathLength;
+                    project = currProject;
                 }
             }
+            if (project != null && !result.contains(project)) {
+                result.add(project);
+            }
         }
+
         return result;
     }
 
