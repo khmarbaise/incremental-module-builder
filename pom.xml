@@ -4,21 +4,17 @@
   <parent>
     <groupId>com.soebes.smpp</groupId>
     <artifactId>smpp</artifactId>
-    <version>5.3.5</version>
+    <version>6.0.3</version>
   </parent>
 
   <groupId>com.soebes.maven.extensions</groupId>
   <artifactId>incremental-module-builder</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.10.0-SNAPSHOT</version>
   <name>Maven Incremental Module Builder</name>
 
   <properties>
-    <maven.compiler.source>7</maven.compiler.source>
-    <maven.compiler.target>7</maven.compiler.target>
-    <scm.version>1.9.5</scm.version>
-    <mavenVersion>3.3.1</mavenVersion>
-    <gmaven-plugin.version>1.5</gmaven-plugin.version>
-    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+    <maven.compiler.release>8</maven.compiler.release>
+    <mavenVersion>3.6.3</mavenVersion>
     <smpp.component>incremental-module-builder</smpp.component>
   </properties>
 
@@ -32,18 +28,13 @@
 
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.24</version>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
-      <version>1.7.1</version>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-annotations</artifactId>
-      <version>1.7.1</version>
+      <version>2.1.1</version>
       <scope>provided</scope>
     </dependency>
 
@@ -58,13 +49,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.20.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
+      <version>3.24.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -81,110 +66,7 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-manager-plexus</artifactId>
-      <version>${scm.version}</version>
-    </dependency>
-
     <!-- providers declaration -->
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-accurev</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-bazaar</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-clearcase</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-cvsexe</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-cvsjava</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-gitexe</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-hg</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-jazz</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-local</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-perforce</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-starteam</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-svnexe</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-synergy</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-vss</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.scm</groupId>
-      <artifactId>maven-scm-provider-tfs</artifactId>
-      <version>${scm.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.perforce.p4maven</groupId>
-      <artifactId>p4maven-provider</artifactId>
-      <version>1.0.6</version>
-      <scope>runtime</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
@@ -192,9 +74,9 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
+      <groupId>com.soebes.examples</groupId>
+      <artifactId>module-calculator</artifactId>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <distributionManagement>
@@ -209,7 +91,7 @@
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>1.7.1</version>
+        <version>2.1.1</version>
         <executions>
           <execution>
             <id>generate-metadata</id>
@@ -235,114 +117,5 @@
       </plugin>
     </plugins>
   </build>
-
-
-  <profiles>
-    <profile>
-      <id>run-its</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>gmaven-plugin</artifactId>
-            <version>1.5</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>1.8.4</version>
-              </dependency>
-              <dependency>
-                <groupId>org.codehaus.gmaven.runtime</groupId>
-                <artifactId>gmaven-runtime-1.8</artifactId>
-                <version>1.4</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <debug>false</debug>
-              <verbose>true</verbose>
-              <stacktrace>true</stacktrace>
-              <defaultScriptExtension>.groovy</defaultScriptExtension>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>testCompile</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-invoker-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>1.8.4</version>
-              </dependency>
-              <dependency>
-                <groupId>org.codehaus.gmaven.runtime</groupId>
-                <artifactId>gmaven-runtime-1.8</artifactId>
-                <version>1.4</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <streamLogs>true</streamLogs>
-              <addTestClassPath>true</addTestClassPath>
-              <debug>false</debug>
-              <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
-              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-              <projectsDirectory>src/it</projectsDirectory>
-              <showVersion>true</showVersion>
-              <preBuildHookScript>setup</preBuildHookScript>
-              <postBuildHookScript>verify</postBuildHookScript>
-<!--              <settingsFile>src/it/settings.xml</settingsFile>-->
-              <!-- Currently working with more than one thread does not work, cause it is not guaranteed that the setup-config project
-                is build at first. see also http://jira.codehaus.org/browse/MINVOKER-147 -->
-              <parallelThreads>1</parallelThreads>
-              <filterProperties>
-                <pluginPropertyUsedForFiltering>localRepositoryPath</pluginPropertyUsedForFiltering>
-              </filterProperties>
-            </configuration>
-            <executions>
-              <execution>
-                <id>pre-integration-tests</id>
-                <goals>
-                  <goal>install</goal>
-                </goals>
-                <configuration>
-<!--                  <extraArtifacts>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.5.2:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-clean-plugin:2.6.1:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-jar-plugin:2.5:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.17:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.surefire:surefire-testng:2.17:jar</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.surefire:surefire-testng-utils:2.17:jar</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-failsafe-plugin:2.17:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-resources-plugin:2.7:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.5.3:maven-plugin</extraArtifact>-->
-<!--                    <extraArtifact>junit:junit:4.13.2:jar</extraArtifact>-->
-<!--                    <extraArtifact>log4j:log4j:1.2.16</extraArtifact>-->
-<!--                    <extraArtifact>com.beust:jcommander:1.35:jar</extraArtifact>-->
-<!--                    <extraArtifacts>org.easytesting:fest-assert:1.4:jar</extraArtifacts>-->
-<!--                    <extraArtifacts>org.easytesting:fest-assert-core:2.0M10:jar</extraArtifacts>-->
-<!--                    <extraArtifact>com.soebes.smpp:smpp:1.2.0:pom</extraArtifact>-->
-<!--                  </extraArtifacts>-->
-                </configuration>
-              </execution>
-              <execution>
-                <id>integration-tests</id>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>

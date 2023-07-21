@@ -19,11 +19,6 @@ package com.soebes.maven.extensions.incremental;
  * under the License.
  */
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.lifecycle.internal.LifecycleModuleBuilder;
@@ -33,13 +28,18 @@ import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+
 /**
  * @author Karl Heinz Marbaise <khmabaise@apache.org>
  */
 class IncrementalModuleBuilderImpl
 {
 
-    private final Logger logger = LoggerFactory.getLogger( getClass() );
+    private final Logger LOGGER = LoggerFactory.getLogger( getClass() );
 
     private MavenSession mavenSession;
 
@@ -58,7 +58,7 @@ class IncrementalModuleBuilderImpl
         this.lifecycleModuleBuilder =
             Objects.requireNonNull( lifecycleModuleBuilder, "lifecycleModuleBuilder is not allowed to be null." );
         this.mavenSession = Objects.requireNonNull( session, "session is not allowed to be null." );
-        this.taskSegments = Objects.requireNonNull( taskSegments, "taskSegements is not allowed to be null" );
+        this.taskSegments = Objects.requireNonNull( taskSegments, "taskSegments is not allowed to be null" );
         this.reactorContext = Objects.requireNonNull( reactorContext, "reactorContext is not allowed to be null." );
 
         ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
@@ -69,9 +69,9 @@ class IncrementalModuleBuilderImpl
         {
             intermediateResult.add( selectedProject );
             // Up or downstream ? (-amd)
-            intermediateResult.addAll( projectDependencyGraph.getDownstreamProjects( selectedProject, true ) );
+            intermediateResult.addAll( projectDependencyGraph.getDownstreamProjects( selectedProject, false ) );
             // TODO: Need to think about this? -am ?
-            // intermediateResult.addAll(projectDependencyGraph.getUpstreamProjects(selectedProject,
+//             intermediateResult.addAll(projectDependencyGraph.getUpstreamProjects(selectedProject, false));
             // true));
         }
 
@@ -94,23 +94,23 @@ class IncrementalModuleBuilderImpl
     {
         this.mavenSession.setProjects( this.projects );
 
-        logger.info( "Recalculated reactor:" );
+        LOGGER.info( "Recalculated reactor:" );
         for ( MavenProject mavenProject : this.mavenSession.getProjects() )
         {
-            logger.info( " {}", mavenProject.getName() );
+            LOGGER.info( " {}", mavenProject.getName() );
         }
 
         for ( TaskSegment taskSegment : this.taskSegments )
         {
-            logger.debug( "segment" );
+            LOGGER.debug( "segment" );
             List<Object> tasks = taskSegment.getTasks();
             for ( Object task : tasks )
             {
-                logger.debug( " task:" + task );
+                LOGGER.debug(" task:" + task );
             }
             for ( MavenProject mavenProject : mavenSession.getProjects() )
             {
-                logger.info( "Building project: {}", mavenProject.getId() );
+                LOGGER.info( "Building project: {}", mavenProject.getId() );
                 lifecycleModuleBuilder.buildProject( mavenSession, reactorContext, mavenProject, taskSegment );
             }
         }

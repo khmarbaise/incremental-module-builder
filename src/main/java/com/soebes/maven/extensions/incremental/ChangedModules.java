@@ -19,36 +19,32 @@ package com.soebes.maven.extensions.incremental;
  * under the License.
  */
 
-import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.soebes.module.calculator.ModuleCalculator;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.scm.ScmFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Karl Heinz Marbaise <khmarbaise@apache.org>
  */
-public class ModuleCalculator
+public class ChangedModules
 {
-    private final Logger logger = LoggerFactory.getLogger( getClass().getName() );
+    private final Logger LOGGER = LoggerFactory.getLogger( getClass().getName() );
 
     private List<MavenProject> projectList;
 
-    private List<ScmFile> changeList;
-
     /**
      * @param projectList The list of Maven Projects which are in the reactor.
-     * @param changeList The list of changes within this structure.
      */
-    public ModuleCalculator( List<MavenProject> projectList, List<ScmFile> changeList )
+    public ChangedModules(List<MavenProject> projectList )
     {
         this.projectList = Objects.requireNonNull( projectList, "projectList is not allowed to be null." );
-        this.changeList = Objects.requireNonNull( changeList, "changeList is not allowed to be null." );
     }
 
     /**
@@ -57,26 +53,34 @@ public class ModuleCalculator
      * @param projectRootpath Root path of the project.
      * @return The list of modules which needed to be rebuilt.
      */
-    public List<MavenProject> calculateChangedModules( Path projectRootpath )
+    public List<MavenProject> findChangedModules(Path projectRootpath )
     {
         // TODO: Think about if we got only pom packaging modules? Do we
         // need to do something special there?
         List<MavenProject> result = new ArrayList<>();
         for ( MavenProject project : projectList )
         {
-            Path relativize = projectRootpath.relativize( project.getBasedir().toPath() );
-            for ( ScmFile fileItem : changeList )
-            {
-                boolean startsWith = new File( fileItem.getPath() ).toPath().startsWith( relativize );
-                logger.debug( "startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize );
-                if ( startsWith )
-                {
-                    if ( !result.contains( project ) )
-                    {
-                        result.add( project );
-                    }
-                }
+            ModuleCalculator moduleCalculator = new ModuleCalculator();
+            Path relativize = projectRootpath.relativize(project.getBasedir().toPath());
+            Path moduleHash = relativize.resolve(Paths.get("target/module.hash"));
+            LOGGER.info("Project: {} ModuleHash: {}", project, moduleHash);
+            boolean hashHasChanged = moduleCalculator.hashChanged(relativize, moduleHash);
+            if (hashHasChanged) {
+                LOGGER.info(" -> Changed {}", project);
+                result.add(project);
             }
+//            for ( ScmFile fileItem : changeList )
+//            {
+//                boolean startsWith = new File( fileItem.getPath() ).toPath().startsWith( relativize );
+//                logger.debug( "startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize );
+//                if ( startsWith )
+//                {
+//                    if ( !result.contains( project ) )
+//                    {
+//                        result.add( project );
+//                    }
+//                }
+//            }
         }
         return result;
     }
