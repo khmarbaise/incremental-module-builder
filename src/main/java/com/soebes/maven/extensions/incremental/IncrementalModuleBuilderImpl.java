@@ -20,7 +20,6 @@ package com.soebes.maven.extensions.incremental;
  */
 
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.execution.ProjectDependencyGraph;
 import org.apache.maven.lifecycle.internal.LifecycleModuleBuilder;
 import org.apache.maven.lifecycle.internal.ReactorContext;
 import org.apache.maven.lifecycle.internal.TaskSegment;
@@ -28,7 +27,6 @@ import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -61,31 +59,25 @@ class IncrementalModuleBuilderImpl
         this.taskSegments = Objects.requireNonNull( taskSegments, "taskSegments is not allowed to be null" );
         this.reactorContext = Objects.requireNonNull( reactorContext, "reactorContext is not allowed to be null." );
 
-        ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
+//        ProjectDependencyGraph projectDependencyGraph = session.getProjectDependencyGraph();
 
-        List<MavenProject> intermediateResult = new LinkedList<>();
+//        List<MavenProject> intermediateResult = new LinkedList<>();
 
-        for ( MavenProject selectedProject : selectedProjects )
-        {
-            intermediateResult.add( selectedProject );
-            // Up or downstream ? (-amd)
-            intermediateResult.addAll( projectDependencyGraph.getDownstreamProjects( selectedProject, false ) );
-            // TODO: Need to think about this? -am ?
-//             intermediateResult.addAll(projectDependencyGraph.getUpstreamProjects(selectedProject, false));
-            // true));
-        }
+//        LOGGER.info("Selected projects:");
+//        for ( MavenProject selectedProject : selectedProjects )
+//        {
+//            LOGGER.info(" {}", selectedProject);
+//            // TODO: Need to think about this? -am ?
+//            List<MavenProject> upstreamProjects = projectDependencyGraph.getDownstreamProjects(selectedProject, false);
+//
+//            upstreamProjects.forEach(s -> LOGGER.info("   {}", s));
+//            upstreamProjects.stream().filter(s -> !intermediateResult.contains(s)).forEach(intermediateResult::add);
+//            if (!intermediateResult.contains(selectedProject)) {
+//                intermediateResult.add( selectedProject );
+//            }
+//        }
 
-        List<MavenProject> result = new LinkedList<>();
-
-        for ( MavenProject project : intermediateResult )
-        {
-            if ( !result.contains( project ) )
-            {
-                result.add( project );
-            }
-        }
-
-        this.projects = result;
+        this.projects = selectedProjects;
 
     }
 

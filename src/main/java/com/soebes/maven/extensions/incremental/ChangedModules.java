@@ -19,16 +19,16 @@ package com.soebes.maven.extensions.incremental;
  * under the License.
  */
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import com.soebes.module.calculator.ModuleCalculator;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Karl Heinz Marbaise <khmarbaise@apache.org>
@@ -57,7 +57,9 @@ public class ChangedModules
     {
         // TODO: Think about if we got only pom packaging modules? Do we
         // need to do something special there?
-        List<MavenProject> result = new ArrayList<>();
+        LOGGER.debug("findChangedModules: {}", projectRootpath);
+        projectList.forEach(s -> LOGGER.debug(" -> {}", s.getArtifactId()));
+        List<MavenProject> result = new LinkedList<>();
         for ( MavenProject project : projectList )
         {
             ModuleCalculator moduleCalculator = new ModuleCalculator();

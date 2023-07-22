@@ -81,24 +81,22 @@ public class IncrementalModuleBuilder
 //            LOGGER.info( " Nothing has been changed." );
 //        }
 //        else
+
+        ChangedModules mc =
+            new ChangedModules( session.getProjectDependencyGraph().getSortedProjects() );
+        List<MavenProject> changedModules = mc.findChangedModules( projectRootpath );
+
+        for ( MavenProject mavenProject : changedModules )
         {
-
-            ChangedModules mc =
-                new ChangedModules( session.getProjectDependencyGraph().getSortedProjects() );
-            List<MavenProject> changedModules = mc.findChangedModules( projectRootpath );
-
-            for ( MavenProject mavenProject : changedModules )
-            {
-                LOGGER.info( "Changed Project: " + mavenProject.getId() );
-            }
-
-            IncrementalModuleBuilderImpl incrementalModuleBuilderImpl =
-                new IncrementalModuleBuilderImpl( changedModules, lifecycleModuleBuilder, session,
-                                                  reactorContext, taskSegments );
-
-            // Really build only changed modules.
-            incrementalModuleBuilderImpl.build();
+            LOGGER.info( "Changed Project: " + mavenProject.getId() );
         }
+
+        IncrementalModuleBuilderImpl incrementalModuleBuilderImpl =
+            new IncrementalModuleBuilderImpl( changedModules, lifecycleModuleBuilder, session,
+                                              reactorContext, taskSegments );
+
+        // Really build only changed modules.
+        incrementalModuleBuilderImpl.build();
     }
 
 }
