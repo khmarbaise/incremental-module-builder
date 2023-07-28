@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,7 @@ import java.util.Objects;
 /**
  * @author Karl Heinz Marbaise <khmarbaise@apache.org>
  */
-public class ChangedModules
+class ChangedModules
 {
     private final Logger LOGGER = LoggerFactory.getLogger( getClass().getName() );
 
@@ -42,7 +43,7 @@ public class ChangedModules
     /**
      * @param projectList The list of Maven Projects which are in the reactor.
      */
-    public ChangedModules(List<MavenProject> projectList )
+    ChangedModules(List<MavenProject> projectList )
     {
         this.projectList = Objects.requireNonNull( projectList, "projectList is not allowed to be null." );
     }
@@ -53,7 +54,7 @@ public class ChangedModules
      * @param projectRootpath Root path of the project.
      * @return The list of modules which needed to be rebuilt.
      */
-    public List<MavenProject> findChangedModules(Path projectRootpath )
+    List<MavenProject> findChangedModules(Path projectRootpath )
     {
         // TODO: Think about if we got only pom packaging modules? Do we
         // need to do something special there?
@@ -66,23 +67,11 @@ public class ChangedModules
             Path relativize = projectRootpath.relativize(project.getBasedir().toPath());
             Path moduleHash = relativize.resolve(Paths.get("target/module.hash"));
             LOGGER.info("Project: {} ModuleHash: {}", project, moduleHash);
-            boolean hashHasChanged = moduleCalculator.hashChanged(relativize, moduleHash);
+            boolean hashHasChanged = moduleCalculator.hashChanged(relativize, moduleHash, Arrays.asList(".git", ".github", "target", ".idea"));
             if (hashHasChanged) {
                 LOGGER.info(" -> Changed {}", project);
                 result.add(project);
             }
-//            for ( ScmFile fileItem : changeList )
-//            {
-//                boolean startsWith = new File( fileItem.getPath() ).toPath().startsWith( relativize );
-//                logger.debug( "startswith: " + startsWith + " " + fileItem.getPath() + " " + relativize );
-//                if ( startsWith )
-//                {
-//                    if ( !result.contains( project ) )
-//                    {
-//                        result.add( project );
-//                    }
-//                }
-//            }
         }
         return result;
     }
