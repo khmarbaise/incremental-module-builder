@@ -67,6 +67,7 @@ class ChangedModules
             Path relativize = projectRootpath.relativize(project.getBasedir().toPath());
             Path moduleHash = relativize.resolve(Paths.get("target/module.hash"));
             LOGGER.info("Project: {} ModuleHash: {}", project, moduleHash);
+            //TODO: Find a way to read .gitignore to fill-up excludes list for calling hashChanged()
             boolean hashHasChanged = moduleCalculator.hashChanged(relativize, moduleHash, Arrays.asList(".git", ".github", "target", ".idea"));
             if (hashHasChanged) {
                 LOGGER.info(" -> Changed {}", project);
