@@ -63,8 +63,8 @@ public class IncrementalModuleBuilder
     }
 
     @Override
-    public void build( final MavenSession session, final ReactorContext reactorContext, ProjectBuildList projectBuilds,
-                       final List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus )
+    public void build( MavenSession session, ReactorContext reactorContext, ProjectBuildList projectBuilds,
+                       List<TaskSegment> taskSegments, ReactorBuildStatus reactorBuildStatus )
         throws ExecutionException, InterruptedException
     {
 
@@ -74,7 +74,9 @@ public class IncrementalModuleBuilder
             LOGGER.info( "Not executing in root." );
         }
 
-        Path projectRootpath = session.getTopLevelProject().getBasedir().toPath();
+        int degreeOfConcurrency = session.getRequest().getDegreeOfConcurrency();
+
+        Path projectRootPath = session.getTopLevelProject().getBasedir().toPath();
 
 //        if ( changedFiles.isEmpty() )
 //        {
@@ -84,7 +86,7 @@ public class IncrementalModuleBuilder
 
         ChangedModules mc =
             new ChangedModules( session.getProjectDependencyGraph().getSortedProjects() );
-        List<MavenProject> changedModules = mc.findChangedModules( projectRootpath );
+        List<MavenProject> changedModules = mc.findChangedModules( projectRootPath );
 
         for ( MavenProject mavenProject : changedModules )
         {

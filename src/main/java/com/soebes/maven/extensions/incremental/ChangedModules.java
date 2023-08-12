@@ -50,21 +50,21 @@ class ChangedModules
 
     /**
      * Calculate the modules which needed to be rebuilt based on the list of changes from SCM.
-     * 
-     * @param projectRootpath Root path of the project.
+     *
+     * @param projectRootPath Root path of the project.
      * @return The list of modules which needed to be rebuilt.
      */
-    List<MavenProject> findChangedModules(Path projectRootpath )
+    List<MavenProject> findChangedModules(Path projectRootPath )
     {
         // TODO: Think about if we got only pom packaging modules? Do we
         // need to do something special there?
-        LOGGER.debug("findChangedModules: {}", projectRootpath);
+        LOGGER.debug("findChangedModules: {}", projectRootPath);
         projectList.forEach(s -> LOGGER.debug(" -> {}", s.getArtifactId()));
         List<MavenProject> result = new LinkedList<>();
         for ( MavenProject project : projectList )
         {
             ModuleCalculator moduleCalculator = new ModuleCalculator();
-            Path relativize = projectRootpath.relativize(project.getBasedir().toPath());
+            Path relativize = projectRootPath.relativize(project.getBasedir().toPath());
             Path moduleHash = relativize.resolve(Paths.get("target/module.hash"));
             LOGGER.info("Project: {} ModuleHash: {}", project, moduleHash);
             //TODO: Find a way to read .gitignore to fill-up excludes list for calling hashChanged()
