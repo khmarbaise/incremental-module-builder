@@ -7,7 +7,7 @@
 If you are working with larger builds sometimes it is worth to think
 to build only parts of the whole reactor. So it would be nice
 to only build those modules which have been changed. This
-can be controled by using the `--projects` option on command line.
+can be controlled by using the `--projects` option on the command line.
 
 The problem here is that you need to identify those modules which
 have been changed manually which can become cumbersome.
